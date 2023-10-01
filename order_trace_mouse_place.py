@@ -64,7 +64,6 @@ def arrow_draw():
     for x, y in player_road_list:
         arrow.draw(x,y)
 
-
 def cursor_draw():
     arrow.draw(mouse_x, mouse_y)
 
@@ -77,10 +76,12 @@ def set_direction():
 
 def calculate_distance():
     global x2, y2
+    global player_road_list
+
     distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
     if distance <= 10:
-        x2 = random.randint(0, TUK_WIDTH - 1)
-        y2 = random.randint(0, TUK_HEIGHT - 1)
+        player_road_list.remove(player_road_list[0])
+        
 
 def new_list(x,y):
     global player_road_list
