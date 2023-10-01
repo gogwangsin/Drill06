@@ -17,26 +17,30 @@ arrow = load_image('hand_arrow.png')
 #---------------------------------------------------------------------------
 
 running = True
-def exit_key():
+def event_key():
     global running
+    global mouse_x, mouse_y
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
             running = False
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
+        elif event.type == SDL_MOUSEMOTION:
+            mouse_x, mouse_y = event.x, TUK_HEIGHT - 1 - event.y 
 
 def Rendering():
     clear_canvas()
     tuk_ground.draw(TUK_WIDTH // 5, TUK_HEIGHT // 5)
     boy_draw()
     arrow_draw()
+    cursor_draw()
     update_canvas()
     pass
 
 def Logic():
     global x1, y1, x2, y2
-    t = 0.03  
+    t = 0.03 
     x1 += (x2 - x1) * t
     y1 += (y2 - y1) * t
     calculate_distance()
@@ -52,6 +56,8 @@ def boy_draw():
 def arrow_draw():
     arrow.draw(x2,y2)
 
+def cursor_draw():
+    arrow.draw(mouse_x, mouse_y)
 
 def set_direction():
     global x_dir
@@ -74,8 +80,11 @@ x1, y1 = TUK_WIDTH, TUK_HEIGHT
 x2 = random.randint(0, TUK_WIDTH - 1)
 y2 = random.randint(0, TUK_HEIGHT - 1)
 x_dir = 1
+mouse_x, mouse_y = 0, 0
+hide_cursor()
+
 while running:
-    exit_key()
+    event_key()
     if not running:
         break
     Rendering()
