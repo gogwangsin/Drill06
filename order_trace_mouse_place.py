@@ -27,7 +27,12 @@ def event_key():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
         elif event.type == SDL_MOUSEMOTION:
-            mouse_x, mouse_y = event.x, TUK_HEIGHT - 1 - event.y 
+            mouse_x, mouse_y = event.x, TUK_HEIGHT - 1 - event.y
+        elif event.type == SDL_MOUSEBUTTONDOWN:
+            x, y = event.x, TUK_HEIGHT - 1 - event.y
+            new_list(x,y)
+ 
+
 
 def Rendering():
     clear_canvas()
@@ -36,16 +41,18 @@ def Rendering():
     arrow_draw()
     cursor_draw()
     update_canvas()
-    pass
 
 def Logic():
     global x1, y1, x2, y2
-    t = 0.03 
+    if player_road_list:
+        (x2, y2) = player_road_list[0]
+
+    t = 0.08 
     x1 += (x2 - x1) * t
     y1 += (y2 - y1) * t
     calculate_distance()
     set_direction()
-    
+  
 
 def boy_draw():
     if x_dir < 0:
@@ -53,8 +60,10 @@ def boy_draw():
     else:
         character.clip_draw(frame * 100, 100, 100, 100, x1, y1)
 
-def arrow_draw():
-    arrow.draw(x2,y2)
+def arrow_draw(): 
+    for x, y in player_road_list:
+        arrow.draw(x,y)
+
 
 def cursor_draw():
     arrow.draw(mouse_x, mouse_y)
@@ -73,6 +82,9 @@ def calculate_distance():
         x2 = random.randint(0, TUK_WIDTH - 1)
         y2 = random.randint(0, TUK_HEIGHT - 1)
 
+def new_list(x,y):
+    global player_road_list
+    player_road_list.append((x,y))
 
 #===================================================  
 frame = 0
@@ -82,6 +94,9 @@ y2 = random.randint(0, TUK_HEIGHT - 1)
 x_dir = 1
 mouse_x, mouse_y = 0, 0
 hide_cursor()
+
+player_road_list = []
+
 
 while running:
     event_key()
